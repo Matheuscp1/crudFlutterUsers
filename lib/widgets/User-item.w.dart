@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/User.dart';
+import 'package:flutter_application_1/model/User.m.dart';
 
 class UserListItem extends StatelessWidget {
   const UserListItem({Key? key, required this.user, required this.onDelete})
@@ -66,7 +66,7 @@ class UserListItem extends StatelessWidget {
             GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
-            showDialog(
+            /*   showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
@@ -95,7 +95,8 @@ class UserListItem extends StatelessWidget {
                   ],
                 );
               },
-            );
+            ); */
+            Navigator.of(context).pushNamed('/form', arguments: user);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
