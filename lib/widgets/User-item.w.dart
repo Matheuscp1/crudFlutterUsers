@@ -5,7 +5,7 @@ class UserListItem extends StatelessWidget {
   const UserListItem({Key? key, required this.user, required this.onDelete})
       : super(key: key);
   final User user;
-  final void Function(User user) onDelete;
+  final void Function(String user) onDelete;
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -42,7 +42,7 @@ class UserListItem extends StatelessWidget {
                   ),
                   child: const Text('Deletar'),
                   onPressed: () {
-                    onDelete(user);
+                    onDelete(user.id!);
                     Navigator.of(context).pop();
                   },
                 ),
@@ -56,46 +56,9 @@ class UserListItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(4), color: Colors.grey[200]),
         margin: const EdgeInsets.symmetric(vertical: 5),
         padding: const EdgeInsets.all(16),
-        child:
-            /*       Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Text(
-            user.title,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          )
-        ]) */
-            GestureDetector(
+        child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           onTap: () {
-            /*   showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text('Deseja deletar?'),
-                  actions: <Widget>[
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        textStyle: Theme.of(context).textTheme.labelLarge,
-                      ),
-                      child: const Text('Voltar'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.red,
-                        textStyle: Theme.of(context).textTheme.labelLarge,
-                      ),
-                      child: const Text('Deletar'),
-                      onPressed: () {
-                        onDelete(user);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              },
-            ); */
             Navigator.of(context).pushNamed('/form', arguments: user);
           },
           child: Container(
