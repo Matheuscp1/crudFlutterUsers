@@ -1,16 +1,21 @@
 # crud_users
 
-A new Flutter project.
-
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Crud base em flutter para criação de usuários
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Comandos
+Rodar o comando no terminal do projeto para baixas a dependência 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+flutter pub get 
+```
+
+## Funcionalidades
+Esse projeto já possui algumas bibliotecas e funcionalidades prontas, como as seguintes:
+* [x] HTTP para fazer requisões HTTP
+* [x] INTL para manipular datas
+* [x] Possui modal para deletar usúario
+* [x] RefreshIndicator para atualizar a lista manualmente
+
