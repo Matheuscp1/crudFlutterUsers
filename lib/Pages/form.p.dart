@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:crud_users/model/User.m.dart';
+import 'package:crud_users/utils/apiUrl.u.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/User.m.dart';
-import 'package:flutter_application_1/utils/apiUrl.u.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
@@ -16,8 +16,7 @@ class FormUser extends StatefulWidget {
   State<FormUser> createState() => _FormUserState();
 }
 
-class _FormUserState extends State<FormUser>
-    with AutomaticKeepAliveClientMixin {
+class _FormUserState extends State<FormUser> {
   final _formKey = GlobalKey<FormState>();
   final _formData = <String, Object>{};
   final String baseUrl = ApiURL.getStates;
@@ -38,8 +37,6 @@ class _FormUserState extends State<FormUser>
     if (widget.arguments != null) updateControllers();
   }
 
-  @override
-  bool get wantKeepAlive => true;
   Future<void> updateControllers() async {
     User? user = widget.arguments!;
     String? dateFormated = DateFormat('dd/MM/yyyy').format(user.birthDate!);
@@ -102,7 +99,7 @@ class _FormUserState extends State<FormUser>
                     actions: [
                       TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(true);
                           },
                           child: const Text('Voltar'))
                     ],
@@ -127,7 +124,7 @@ class _FormUserState extends State<FormUser>
                     actions: [
                       TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(true);
                           },
                           child: const Text('Voltar'))
                     ],
@@ -136,7 +133,13 @@ class _FormUserState extends State<FormUser>
           }
         }
       }
-      if (context.mounted) Navigator.of(context).pop();
+      _formKey.currentState
+          ?.reset(); // Restaura os valores iniciais do formulário
+      setState(() {
+        // Atualiza o estado desejado
+      });
+      if (context.mounted) Navigator.of(context).pop(true);
+
       //print(_states);
     } catch (e) {
       return;
@@ -198,7 +201,6 @@ class _FormUserState extends State<FormUser>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     User? user = widget.arguments;
     return SafeArea(
         child: Scaffold(
@@ -206,7 +208,6 @@ class _FormUserState extends State<FormUser>
               IconButton(onPressed: _submitForm, icon: const Icon(Icons.save))
             ]),
             body: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.all(5),
                 child: Form(

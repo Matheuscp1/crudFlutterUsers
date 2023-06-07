@@ -1,15 +1,26 @@
+import 'package:crud_users/model/User.m.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/model/User.m.dart';
 
-class UserListItem extends StatelessWidget {
-  const UserListItem({Key? key, required this.user, required this.onDelete})
+class UserListItem extends StatefulWidget {
+  const UserListItem(
+      {Key? key,
+      required this.user,
+      required this.onDelete,
+      required this.onNavigate})
       : super(key: key);
   final User user;
   final void Function(String user) onDelete;
+  final VoidCallback onNavigate;
+
+  @override
+  State<UserListItem> createState() => _UserListItemState();
+}
+
+class _UserListItemState extends State<UserListItem> {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: ValueKey<User>(user),
+      key: ValueKey<User>(widget.user),
       direction: DismissDirection.endToStart,
       background: Container(
         decoration: BoxDecoration(
@@ -32,7 +43,7 @@ class UserListItem extends StatelessWidget {
                   ),
                   child: const Text('Voltar'),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(true);
                   },
                 ),
                 TextButton(
@@ -42,7 +53,7 @@ class UserListItem extends StatelessWidget {
                   ),
                   child: const Text('Deletar'),
                   onPressed: () {
-                    onDelete(user.id!);
+                    widget.onDelete(widget.user.id!);
                     Navigator.of(context).pop();
                   },
                 ),
@@ -54,7 +65,11 @@ class UserListItem extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
-          Navigator.of(context).pushNamed('/form', arguments: user);
+          Navigator.of(context)
+              .pushNamed('/form', arguments: widget.user)
+              .then((value) {
+            widget.onNavigate();
+          });
         },
         child: Container(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -68,12 +83,12 @@ class UserListItem extends StatelessWidget {
                     color: Colors.grey,
                   )),
               child: ListTile(
-                  title: Text(user.firstName ?? 'Vazio'),
-                  subtitle: Text(user.lastName ?? 'Vazio'),
-                  leading:
-                      user.picture != null && user.picture!.contains('https')
-                          ? Image.network(user.picture!)
-                          : null),
+                  title: Text(widget.user.firstName ?? 'Vazio'),
+                  subtitle: Text(widget.user.lastName ?? 'Vazio'),
+                  leading: widget.user.picture != null &&
+                          widget.user.picture!.contains('https')
+                      ? Image.network(widget.user.picture!)
+                      : null),
             )),
       ),
     );

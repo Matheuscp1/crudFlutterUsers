@@ -1,12 +1,13 @@
 import 'dart:convert';
 
+import 'package:crud_users/Pages/form.p.dart';
+import 'package:crud_users/model/User.m.dart';
+import 'package:crud_users/utils/apiUrl.u.dart';
+import 'package:crud_users/utils/appRoutes.u.dart';
+import 'package:crud_users/utils/transition.u.dart';
+import 'package:crud_users/widgets/User-item.w.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/Pages/form.p.dart';
-import 'package:flutter_application_1/model/User.m.dart';
-import 'package:flutter_application_1/utils/apiUrl.u.dart';
-import 'package:flutter_application_1/utils/appRoutes.u.dart';
-import 'package:flutter_application_1/utils/transition.u.dart';
-import 'package:flutter_application_1/widgets/User-item.w.dart';
+
 // ignore: depend_on_referenced_packages, unused_import
 import 'package:http/http.dart' as http;
 
@@ -48,6 +49,9 @@ class ListUsers extends StatefulWidget {
 class _ListUsersState extends State<ListUsers> {
   String? ab;
   final String baseUrl = ApiURL.getUsers;
+  void _updateState() {
+    setState(() {});
+  }
 
   Future<List?> getUsers() async {
     try {
@@ -86,6 +90,7 @@ class _ListUsersState extends State<ListUsers> {
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     const FormUser())).then((value) {
+                          print(value);
                           setState(() {});
                         })
                       },
@@ -132,7 +137,10 @@ class _ListUsersState extends State<ListUsers> {
                                     final User user =
                                         User.fromJson(jsonDecode(userMap));
                                     return UserListItem(
-                                        user: user, onDelete: deleteUser);
+                                      user: user,
+                                      onDelete: deleteUser,
+                                      onNavigate: _updateState,
+                                    );
                                   });
                             } else {
                               return Container(
