@@ -17,6 +17,20 @@ main() => runApp(MaterialApp(
             arguments: ModalRoute.of(context)?.settings.arguments as User)
       },
       theme: ThemeData(
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            backgroundColor: Color(
+                0xFFF5F5F5), // Define a cor de fundo do FloatingActionButton
+            foregroundColor:
+                Colors.black, // Define a cor do ícone do FloatingActionButton
+          ),
+          appBarTheme: const AppBarTheme(
+              titleTextStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontFamily: 'Nunito',
+                  fontWeight: FontWeight.w700),
+              backgroundColor: Colors.white,
+              iconTheme: IconThemeData(color: Colors.black)),
           scaffoldBackgroundColor: const Color(0xFFFAFAFA),
           pageTransitionsTheme: PageTransitionsTheme(builders: {
             TargetPlatform.android: CustomPageTransitionsBuilder(),
@@ -131,6 +145,17 @@ class _ListUsersState extends State<ListUsers> {
                           })
                     ],
                   )),
-            )));
+            ),
+            floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const FormUser())).then((value) {
+                    setState(() {});
+                  });
+                },
+                child: const Icon(Icons.add))));
   }
 }

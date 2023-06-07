@@ -51,25 +51,36 @@ class UserListItem extends StatelessWidget {
           },
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4), color: Colors.grey[200]),
-        margin: const EdgeInsets.symmetric(vertical: 5),
-        padding: const EdgeInsets.all(16),
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () {
-            Navigator.of(context).pushNamed('/form', arguments: user);
-          },
-          child: Container(
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          Navigator.of(context).pushNamed('/form', arguments: user);
+        },
+        child: Container(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             alignment: Alignment.center,
-            child: const CircleAvatar(
-              child: Icon(Icons.account_circle),
-            ),
-          ),
-        ),
+            child: Card(
+              color: const Color(0xFFF5F5F5),
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                  side: const BorderSide(
+                    color: Colors.grey,
+                  )),
+              child: ListTile(
+                  title: Text(user.firstName ?? 'Vazio'),
+                  subtitle: Text(user.lastName ?? 'Vazio'),
+                  leading:
+                      user.picture != null && user.picture!.contains('https')
+                          ? Image.network(user.picture!)
+                          : null),
+            )),
       ),
     );
   }
 }
+
+/*         decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4), color: Colors.grey[200]),
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        padding: const EdgeInsets.all(16), */

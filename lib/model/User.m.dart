@@ -21,26 +21,26 @@ class User {
   String? brief;
   User.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        birthDate = DateTime.parse(json['birthDate']),
-        picture = json['picture'],
-        email = json['email'],
-        firstName = json['firstName'],
-        lastName = json['lastName'],
-        state = json['state'],
-        city = json['city'],
-        brief = json['brief'];
+        birthDate = DateTime.parse(json['birthDate'] ?? '2028-11-11'),
+        picture = json['picture'] ?? 'Vazio',
+        email = json['email'] ?? 'Vazio',
+        firstName = json['firstName'] ?? 'Vazio',
+        lastName = json['lastName'] ?? 'Vazio',
+        state = json['state'] ?? 'CE',
+        city = json['city'] ?? '',
+        brief = json['brief'] ?? '';
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'birthDate': birthDate!.toIso8601String(),
-      'picture': picture!,
+      'birthDate': birthDate?.toIso8601String(),
+      'picture': picture,
       'email': email,
       'firstName': firstName,
       'lastName': lastName,
       'state': state,
       'city': city,
-      'brief': brief!
+      'brief': brief
     };
   }
 }
