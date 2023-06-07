@@ -1,12 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/User.m.dart';
 import 'package:flutter_application_1/utils/apiUrl.u.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class FormUser extends StatefulWidget {
-  const FormUser({super.key});
+  const FormUser({super.key, this.arguments});
+
+  final User? arguments;
 
   @override
   State<FormUser> createState() => _FormUserState();
@@ -21,10 +24,35 @@ class _FormUserState extends State<FormUser> {
   dynamic _citiesValue;
   List _cities = ['..others'];
   final TextEditingController _date = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _briefController = TextEditingController();
   @override
   initState() {
     super.initState();
+    /* WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Obtendo os argumentos da rota usando um Builder
+      argumento = ModalRoute.of(context)!.settings.arguments as User;
+      setState(() {});
+      print(argumento);
+    }); */
+    if (widget.arguments != null) updateControllers();
     getStates();
+  }
+
+  Future<void> updateControllers() async {
+    User? user = widget.arguments!;
+    String? dateFormated = DateFormat('dd/MM/yyyy').format(user!.birthDate!);
+    _date.text = dateFormated;
+    _nameController.text = user.firstName!;
+    _lastNameController.text = user.lastName!;
+    _emailController.text = user.email!;
+    _briefController.text = user.brief!;
+    _statesValue = user.state ?? 'CE';
+    await getCities(_statesValue);
+    var foundCity = _cities.contains(user.city!);
+    if (foundCity) _citiesValue = user.city;
   }
 
   Future<dynamic> _submitForm() async {
@@ -34,19 +62,25 @@ class _FormUserState extends State<FormUser> {
     _formKey.currentState?.save();
 
     try {
+      Map data = {
+        "email": "${_formData['email']}",
+        "firstName": "${_formData['firstName']}",
+        "lastName": "${_formData['lastName']}",
+        "birthDate": "${_formData['birthDate']}",
+        "state": "${_formData['state']}",
+        "city": "${_formData['city']}",
+        "brief": "${_formData['brief']}"
+      };
+      //encode Map to JSON
+      var body = json.encode(data);
       var response = await http.post(
         Uri.parse(urlUser),
-        body: {
-          "email": "${_formData['email']}",
-          "firstName": "${_formData['firstName']}",
-          "lastName": "${_formData['lastName']}",
-          "birthDate": "${_formData['birthDate']}",
-          "estate": "${_formData['estate']}",
-          "city": "${_formData['city']}",
-          "brief": "${_formData['brief']}"
-        },
+        body: body,
+        headers: {"Content-Type": "application/json"},
       ).timeout(const Duration(seconds: 10));
-      if (response.statusCode != 200) {
+      print(response.body);
+      print(body);
+      if (response.statusCode != 201) {
         if (context.mounted) {
           return showDialog(
               context: context,
@@ -94,7 +128,7 @@ class _FormUserState extends State<FormUser> {
       var response = await http
           .get(Uri.parse(urlCities))
           .timeout(const Duration(seconds: 10));
-      print(response.body);
+
       var cities = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode != 200) {
         setState(() {
@@ -109,7 +143,6 @@ class _FormUserState extends State<FormUser> {
           _cities = ["...others"];
         });
       }
-      print(_cities);
     } catch (e) {}
   }
 
@@ -119,13 +152,14 @@ class _FormUserState extends State<FormUser> {
         child: Scaffold(
             appBar: AppBar(title: const Text(('Crud Usuários'))),
             body: Padding(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.all(0),
               child: Form(
                   key: _formKey,
                   child: ListView(
                     children: [
                       const Divider(),
                       TextFormField(
+                        controller: _nameController,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                             fillColor: const Color(0xFFF5F5F5),
@@ -157,6 +191,7 @@ class _FormUserState extends State<FormUser> {
                         height: 40,
                       ),
                       TextFormField(
+                        controller: _lastNameController,
                         textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                             fillColor: const Color(0xFFF5F5F5),
@@ -188,6 +223,7 @@ class _FormUserState extends State<FormUser> {
                         height: 40,
                       ),
                       TextFormField(
+                        controller: _emailController,
                         textInputAction: TextInputAction.next,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
@@ -254,7 +290,7 @@ class _FormUserState extends State<FormUser> {
                           showDatePicker(
                                   context: context,
                                   initialDate: DateTime.now(),
-                                  firstDate: DateTime(2022),
+                                  firstDate: DateTime(1900),
                                   lastDate: DateTime(2030))
                               .then((date) {
                             setState(() {
@@ -282,15 +318,16 @@ class _FormUserState extends State<FormUser> {
                           items: _states.map((e) {
                             return DropdownMenuItem(value: e, child: Text(e));
                           }).toList(),
-                          onChanged: (_value) {
+                          onChanged: (_value) async {
                             final Object value = _value ?? '';
                             setState(() {
                               _statesValue = _value;
+                              _citiesValue = null;
                             });
-                            getCities(value as String);
+                            await getCities(value as String);
+                            print(_citiesValue);
                           },
-                          onSaved: (estate) =>
-                              _formData['estate'] = estate ?? '',
+                          onSaved: (state) => _formData['state'] = state ?? '',
                           decoration: InputDecoration(
                               fillColor: const Color(0xFFF5F5F5),
                               filled: true,
@@ -313,12 +350,12 @@ class _FormUserState extends State<FormUser> {
                           validator: (value) =>
                               value == null ? 'Cidade é Obrigatorio' : null,
                           value: _citiesValue,
-                          items: _cities.map((e) {
+                          items: _cities?.map((e) {
                             return DropdownMenuItem(value: e, child: Text(e));
                           }).toList(),
                           onChanged: (_value) => {
                                 setState(() {
-                                  _citiesValue = _value;
+                                  _citiesValue = _value.toString();
                                 })
                               },
                           onSaved: (city) => _formData['city'] = city ?? '',
@@ -341,6 +378,7 @@ class _FormUserState extends State<FormUser> {
                         height: 40,
                       ),
                       TextFormField(
+                        controller: _briefController,
                         onFieldSubmitted: (_) => _submitForm(),
                         textInputAction: TextInputAction.done,
                         keyboardType: TextInputType.multiline,
