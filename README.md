@@ -18,5 +18,5 @@ Esse projeto já possui algumas bibliotecas e funcionalidades prontas, como as s
 * [x] INTL para manipular datas
 * [x] Possui modal para deletar usúario e dismissible para executar acão de delete
 * [x] RefreshIndicator para atualizar a lista manualmente
-* [x] RefreshIndicator para atualizar a lista manualmente
+
 
