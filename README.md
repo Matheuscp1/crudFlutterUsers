@@ -16,6 +16,7 @@ flutter pub get
 Esse projeto já possui algumas bibliotecas e funcionalidades prontas, como as seguintes:
 * [x] HTTP para fazer requisões HTTP
 * [x] INTL para manipular datas
-* [x] Possui modal para deletar usúario
+* [x] Possui modal para deletar usúario e dismissible para executar acão de delete
+* [x] RefreshIndicator para atualizar a lista manualmente
 * [x] RefreshIndicator para atualizar a lista manualmente
 
