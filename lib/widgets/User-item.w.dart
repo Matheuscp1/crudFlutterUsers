@@ -43,7 +43,7 @@ class _UserListItemState extends State<UserListItem> {
                   ),
                   child: const Text('Voltar'),
                   onPressed: () {
-                    Navigator.of(context).pop(true);
+                    Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
